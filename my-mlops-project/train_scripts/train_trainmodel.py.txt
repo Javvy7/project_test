@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from src.train_model.train_model import TrainModel
+import pandas as pd
+import boto3
+
+bucket_name = 'dataminds-warehouse'
+s3_file_key = 'multisim_dataset.parquet'
+local_file_path = 'multisim_dataset.parquet'
+
+s3 = boto3.client('s3', region_name='us-east-1')
+s3.download_file(bucket_name, s3_file_key, local_file_path)
+
+df = pd.read_parquet(local_file_path)
+
+tm = TrainModel(df, target_column='target')
+tm.feature_engineering()
+tm.split_data()
+tm.create_preprocessor()
+tm.train_model()
+tm.grid_search()
+tm.evaluate()
+tm.plot_feature_importance()

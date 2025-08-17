@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from src.eda.eda import EDA
+import pandas as pd
+
+bucket_name = 'dataminds-warehouse'
+s3_file_key = 'HousingPrices-Amsterdam-August-2021.csv'
+local_file_path = 'HousingPrices-Amsterdam-August-2021.csv'
+
+EDA.download_from_s3(bucket_name, s3_file_key, local_file_path)
+
+df = pd.read_csv(local_file_path)
+
+eda = EDA(df)
+
+print("\n--- Basic Info ---")
+eda.basic_info()
+
+print("\n--- Missing Values ---")
+eda.check_missing()
+
+print("\n--- Duplicates ---")
+eda.check_duplicates()
+
+print("\n--- Shape & Dtypes ---")
+eda.shape()
+eda.dtypes()
+
+eda.plot_price_distribution()
+eda.scatter_price_room()
+eda.scatter_price_area()
+eda.pairplot()
+eda.barplot_area_price(top_n=10)
+eda.boxplot_price()
+
+print("\n--- Pivot: Price by Room ---")
+print(eda.pivot_price_room())
+
+print("\n--- Pivot: Price by Area ---")
+print(eda.pivot_price_area())
+
+print("\n--- Top 5 Prices ---")
+print(eda.top_prices(top_n=5))
